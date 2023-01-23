@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { ACTIONS } from "../TodoList/TodoList";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -8,8 +8,10 @@ import {
   faLockOpen,
   faTrash,
 } from "@fortawesome/fontawesome-free-solid";
+import { TodoContext } from "../../Store/TodoContext";
 
-function TodoListItem({ todo, dispatch, editTodoHandler }) {
+function TodoListItem({ todo }) {
+  const { dispatch, editTodoHandler} = useContext(TodoContext);
   return (
     <Container>
       {todo.complete ? (
@@ -20,7 +22,10 @@ function TodoListItem({ todo, dispatch, editTodoHandler }) {
       <div>
         <CompletButton
           onClick={() => {
-            dispatch({ type: ACTIONS.COMPLETE_TODO, payload: { id: todo.id } });
+            dispatch({
+              type: ACTIONS.COMPLETE_TODO,
+              payload: { id: todo.id },
+            });
           }}
         >
           {!todo.complete ? (
@@ -31,14 +36,17 @@ function TodoListItem({ todo, dispatch, editTodoHandler }) {
         </CompletButton>
         <EditButton
           onClick={() => {
-            editTodoHandler(todo.name, todo.id);
+          editTodoHandler(todo.name, todo.id);
           }}
         >
           <FontAwesomeIcon icon={faEdit} />
         </EditButton>
         <DeleteButton
           onClick={() => {
-            dispatch({ type: ACTIONS.DELETE_TODO, payload: { id: todo.id } });
+            dispatch({
+              type: ACTIONS.DELETE_TODO,
+              payload: { id: todo.id },
+            });
           }}
         >
           <FontAwesomeIcon icon={faTrash} />

@@ -1,71 +1,17 @@
-import React, { useReducer } from "react";
-import { useState } from "react";
+import React, { useContext } from "react";
 import TodoListItem from "../TodoItem/TodoListItem";
 import styled from "styled-components";
+import { TodoContext } from "../../Store/TodoContext";
 export const ACTIONS = {
   ADD_TODO: "add_todo",
   COMPLETE_TODO: "complete_todo",
   DELETE_TODO: "delete_todo",
 };
 
-function reducer(todos, action) {
-  switch (action.type) {
-    case ACTIONS.ADD_TODO:
-      return [...todos, newTodo(action.payload.name)];
-
-    case ACTIONS.COMPLETE_TODO:
-      return todos.map((todo) => {
-        if (todo.id === action.payload.id) {
-          return { ...todo, complete: !todo.complete };
-        }
-        return todo;
-      });
-    case ACTIONS.DELETE_TODO:
-      return todos.filter((todo) => todo.id !== action.payload.id);
-
-    default:
-      return todos;
-  }
-}
-function newTodo(name) {
-  return {
-    id: Math.random() + new Date().getMilliseconds().toString(),
-    name: name,
-    complete: false,
-  };
-}
 function TodoList() {
-  const [todos, dispatch] = useReducer(reducer, [
-    {
-      id: Math.random() + new Date().getMilliseconds().toString(),
-      name: "Buy apple",
-      complete: false,
-    },
-    {
-      id: Math.random() + new Date().getMilliseconds().toString(),
-      name: "Buy banana",
-      complete: false,
-    },
-    {
-      id: Math.random() + new Date().getMilliseconds().toString(),
-      name: "Buy milk",
-      complete: false,
-    },
-  ]);
-  const [title, setTitle] = useState("");
-  const enebled = title.length > 0;
+  const { title, setTitle, addTodoHandler , todos } = useContext(TodoContext);
 
-  function addTodoHandler(e) {
-    e.preventDefault();
-    dispatch({ type: ACTIONS.ADD_TODO, payload: { name: title } });
-    todos.filter((item) => item.id === todos.id);
-    setTitle("");
-  }
-
-  const editTodoHandler = (name, id) => {
-    setTitle(name);
-    dispatch({ type: ACTIONS.DELETE_TODO, payload: { id: id } });
-  };
+  const enebled = title.trim().length > 6;
   return (
     <>
       <FormDiv>
@@ -87,11 +33,7 @@ function TodoList() {
       {todos.map((todo) => {
         return (
           <div key={todo.id}>
-            <TodoListItem
-              todo={todo}
-              dispatch={dispatch}
-              editTodoHandler={editTodoHandler}
-            />
+            <TodoListItem todo={todo} />
           </div>
         );
       })}
